@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>長所・短所 性格診断｜就活面接対策</title>
+<style>
+  :root{
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --ink:#1f2937;
+    --sub:#5b6573;
+    --line:#e2e8f0;
+    --accent:#1d4e89;
+    --accent-soft:#e8f0fa;
+    --good:#1f7a52;
+    --good-soft:#e6f4ed;
+    --bad:#a8472b;
+    --bad-soft:#f8ece7;
+    --tip:#6b4e9e;
+    --tip-soft:#f0ebf8;
+    --shadow:0 4px 20px rgba(20,40,80,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px 26px;
+  }
+  h1{font-size:1.55rem;margin:0 0 6px;letter-spacing:.02em;}
+  .lead{color:var(--sub);font-size:.97rem;margin:0 0 22px;}
+  .badge{
+    display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:999px;margin-bottom:14px;
+  }
+  ul.notes{margin:0 0 24px;padding-left:1.1em;color:var(--sub);font-size:.9rem;}
+  ul.notes li{margin:4px 0;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:none;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:700;
+    padding:14px 26px;border-radius:10px;transition:transform .05s ease,box-shadow .15s ease,background .15s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:#16406f;}
+  .btn-ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  .btn-ghost:hover{background:var(--accent-soft);}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
+
+  /* progress */
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .progress-head .q-count{font-size:.85rem;color:var(--sub);}
+  .progress-head .q-pct{font-size:.85rem;color:var(--accent);font-weight:700;}
+  .bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:30px;}
+  .bar > span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .25s ease;}
+
+  .q-text{font-size:1.28rem;font-weight:700;min-height:3.2em;display:flex;align-items:center;margin-bottom:8px;}
+  .q-sub{color:var(--sub);font-size:.86rem;margin-bottom:24px;}
+  .answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .ans{
+    border:2px solid var(--line);background:#fff;border-radius:12px;
+    padding:20px;font-size:1.12rem;font-weight:700;cursor:pointer;text-align:center;
+    transition:all .12s ease;color:var(--ink);font-family:inherit;
+  }
+  .ans:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .ans .sub{display:block;font-size:.78rem;font-weight:500;color:var(--sub);margin-top:4px;}
+  .back-link{margin-top:20px;background:none;border:none;color:var(--sub);cursor:pointer;font-size:.88rem;font-family:inherit;text-decoration:underline;padding:0;}
+  .back-link:hover{color:var(--accent);}
+
+  /* result */
+  .summary{
+    background:var(--accent);color:#fff;border-radius:var(--radius);padding:24px 24px;margin-bottom:24px;
+  }
+  .summary .badge2{display:inline-block;background:rgba(255,255,255,.18);font-size:.75rem;font-weight:700;padding:3px 11px;border-radius:999px;margin-bottom:10px;}
+  .summary h2{margin:0 0 8px;font-size:1.3rem;}
+  .summary p{margin:0;opacity:.95;font-size:.96rem;}
+
+  .factor{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+  .factor-head{display:flex;align-items:center;gap:14px;padding:16px 20px;background:#fafbfd;border-bottom:1px solid var(--line);}
+  .factor-head .name{font-weight:700;font-size:1.08rem;}
+  .factor-head .name small{display:block;color:var(--sub);font-weight:500;font-size:.76rem;}
+  .level-pill{margin-left:auto;font-size:.82rem;font-weight:700;padding:5px 13px;border-radius:999px;white-space:nowrap;}
+  .lvl-high{background:var(--accent-soft);color:var(--accent);}
+  .lvl-mid{background:#eef1f5;color:#566;}
+  .lvl-low{background:#f4eee6;color:#8a5a2b;}
+  .meter{flex:0 0 96px;height:7px;background:var(--line);border-radius:999px;overflow:hidden;}
+  .meter > span{display:block;height:100%;background:var(--accent);}
+  .factor-body{padding:6px 20px 20px;}
+  .block{padding:14px 0;border-bottom:1px dashed var(--line);}
+  .block:last-child{border-bottom:none;}
+  .block .lbl{font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-bottom:7px;}
+  .lbl-good{background:var(--good-soft);color:var(--good);}
+  .lbl-bad{background:var(--bad-soft);color:var(--bad);}
+  .lbl-tip{background:var(--tip-soft);color:var(--tip);}
+  .block p{margin:0;font-size:.95rem;}
+  .block .pr{margin-top:8px;background:#fbfcfe;border-left:3px solid var(--tip);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.92rem;color:#33384a;}
+  .block .pr b{color:var(--tip);}
+  /* 総評 */
+  .overall{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 24px;margin-bottom:18px;}
+  .overall h3{margin:0 0 4px;font-size:1.18rem;display:flex;align-items:center;gap:9px;}
+  .overall h3::before{content:"";width:5px;height:20px;background:var(--accent);border-radius:3px;}
+  .overall .ov-type{color:var(--accent);font-weight:700;font-size:.92rem;margin:0 0 14px;}
+  .overall p{margin:0 0 14px;font-size:.96rem;}
+  .ov-sec{padding:13px 16px;border-radius:10px;margin-bottom:12px;}
+  .ov-strong{background:var(--good-soft);}
+  .ov-caution{background:var(--bad-soft);}
+  .ov-sec .ov-lbl{font-size:.8rem;font-weight:700;display:block;margin-bottom:5px;}
+  .ov-strong .ov-lbl{color:var(--good);}
+  .ov-caution .ov-lbl{color:var(--bad);}
+  .ov-sec p{margin:0;font-size:.94rem;}
+  .ov-advice{background:var(--tip-soft);border-radius:10px;padding:15px 17px;}
+  .ov-advice .ov-lbl{color:var(--tip);font-size:.82rem;font-weight:700;display:block;margin-bottom:9px;}
+  .ov-advice .qa{margin:0 0 11px;font-size:.93rem;}
+  .ov-advice .qa:last-child{margin-bottom:0;}
+  .ov-advice .qa .q{font-weight:700;color:var(--tip);}
+  .disclaimer{font-size:.82rem;color:var(--sub);margin-top:26px;border-top:1px solid var(--line);padding-top:16px;}
+  .hidden{display:none;}
+  @media(max-width:480px){
+    .card{padding:24px 18px;}
+    h1{font-size:1.32rem;}
+    .q-text{font-size:1.12rem;}
+    .answers{grid-template-columns:1fr;}
+  }
+  @media print{
+    body{background:#fff;}
+    .btn-row,.back-link{display:none;}
+    .card{box-shadow:none;border:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== START ===== -->
+  <section id="start" class="card">
+    <span class="badge">就活・面接対策｜会員登録不要</span>
+    <h1>あなたの「長所・短所」性格診断</h1>
+    <p class="lead">面接でよく聞かれる「あなたの長所・短所は？」に、自分の言葉で答えられるようになるための診断です。40問の「はい / いいえ」に答えるだけ。おべっか抜きで、率直にあなたの強みと弱みをお伝えします。</p>
+    <ul class="notes">
+      <li>所要時間は約5〜7分。直感で「どちらかといえば」で選んでOKです。</li>
+      <li>診断は心理学で広く使われる「ビッグファイブ（5因子）」をもとにしています。</li>
+      <li>回答データはこのブラウザ内だけで処理され、外部には一切送信されません。</li>
+    </ul>
+    <button class="btn btn-primary" onclick="startQuiz()">診断を始める →</button>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section id="quiz" class="card hidden">
+    <div class="progress-head">
+      <span class="q-count">Q<span id="qNum">1</span> / <span id="qTotal">40</span></span>
+      <span class="q-pct"><span id="qPct">0</span>%</span>
+    </div>
+    <div class="bar"><span id="barFill" style="width:0%"></span></div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-sub">あまり深く考えず、今のあなたに近い方を選んでください。</div>
+    <div class="answers">
+      <button class="ans" onclick="answer(true)">はい<span class="sub">あてはまる</span></button>
+      <button class="ans" onclick="answer(false)">いいえ<span class="sub">あてはまらない</span></button>
+    </div>
+    <button class="back-link" id="backBtn" onclick="goBack()">← 前の質問に戻る</button>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="result" class="hidden">
+    <div class="summary" id="summaryBox"></div>
+    <div id="factorList"></div>
+    <div id="overallBox"></div>
+    <div class="card">
+      <p class="disclaimer">※ この診断は自己理解と面接準備の補助を目的とした簡易的なものであり、心理検査や採用適性の判定ではありません。結果は「自分を説明する言葉のヒント」として活用してください。短所を聞かれたら、率直に認めたうえで「どう向き合っているか」をセットで語ると好印象です。</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="location.reload()">もう一度診断する</button>
+        <button class="btn btn-ghost" onclick="window.print()">結果を印刷 / PDF保存</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===== 設問データ（ビッグファイブ 5因子 × 8問 = 40問） =====
+   factor: O=開放性 / C=誠実性 / E=外向性 / A=協調性 / S=情緒安定性
+   reverse:true は逆転項目（「はい」だとその特性が低い方向） */
+const QUESTIONS = [
+  // 開放性 O
+  {t:"新しくできた店や話題のサービスは、つい試してみたくなる", f:"O", r:false},
+  {t:"映画や本、音楽に触れて、思わず感動し余韻が残ることがよくある", f:"O", r:false},
+  {t:"「もし〜だったら」とあれこれ想像をふくらませて楽しむことがある", f:"O", r:false},
+  {t:"やったことのない作業を任されると、面倒よりワクワクが勝つ", f:"O", r:false},
+  {t:"旅行や外食は、失敗したくないので慣れた定番を選びがちだ", f:"O", r:true},
+  {t:"話を聞くなら理想論より「で、具体的にどうするの」が気になる", f:"O", r:true},
+  {t:"同じ手順を毎日繰り返す作業でも、特に退屈とは感じない", f:"O", r:true},
+  {t:"知らないやり方を試すより、慣れたやり方で確実に進めたい", f:"O", r:true},
+
+  // 誠実性 C
+  {t:"課題やタスクは、締め切り直前ではなく早めに片づける方だ", f:"C", r:false},
+  {t:"一度「やる」と決めたことは、途中で投げ出さずやり切る", f:"C", r:false},
+  {t:"机の上やスマホのフォルダは、わりと整理されている", f:"C", r:false},
+  {t:"待ち合わせや提出期限には、余裕をもって間に合わせる", f:"C", r:false},
+  {t:"やるべきことがあっても、つい後回しにしてしまうことが多い", f:"C", r:true},
+  {t:"気が乗らない作業は、ギリギリまで手をつけないことがある", f:"C", r:true},
+  {t:"書類やメールの見直しは、ざっと済ませて出してしまいがちだ", f:"C", r:true},
+  {t:"計画を立てるより、その場で考えて動く方が性に合っている", f:"C", r:true},
+
+  // 外向性 E
+  {t:"初対面の人が多い集まりでも、自分から話しかけられる", f:"E", r:false},
+  {t:"友人や仲間と過ごした後は、疲れるより元気が出る方だ", f:"E", r:false},
+  {t:"グループの話し合いでは、進行役や言い出しっぺになることが多い", f:"E", r:false},
+  {t:"休日は家にこもるより、外に出て動きたくなる", f:"E", r:false},
+  {t:"大勢の飲み会より、一人や少人数で過ごす方が落ち着く", f:"E", r:true},
+  {t:"会議や授業で発言を求められると、できれば避けたいと思う", f:"E", r:true},
+  {t:"知らない人ばかりの場では、自分から話すより聞き役になる", f:"E", r:true},
+  {t:"にぎやかな場所に長くいると、早く帰って一人になりたくなる", f:"E", r:true},
+
+  // 協調性 A
+  {t:"困っている人を見ると、頼まれなくても声をかけたくなる", f:"A", r:false},
+  {t:"相手の表情や雰囲気から、機嫌や気持ちを察する方だ", f:"A", r:false},
+  {t:"意見が割れたときは、勝ち負けより全員が納得する形を探す", f:"A", r:false},
+  {t:"初対面の人でも、まずは「いい人だろう」と受け止める", f:"A", r:false},
+  {t:"おかしいと思ったことは、相手が誰であってもはっきり言う", f:"A", r:true},
+  {t:"物事を判断するときは、感情よりも損得や合理性で決める", f:"A", r:true},
+  {t:"必要なら、相手と意見がぶつかっても引かない", f:"A", r:true},
+  {t:"人に頼まれても、自分の予定を優先して断ることがある", f:"A", r:true},
+
+  // 情緒安定性 S
+  {t:"予想外のトラブルが起きても、わりと落ち着いて対処できる", f:"S", r:false},
+  {t:"本番やプレッシャーのかかる場面でも、いつも通りの力を出せる", f:"S", r:false},
+  {t:"嫌なことがあっても、一晩寝れば気持ちが切り替わる方だ", f:"S", r:false},
+  {t:"失敗しても「次がんばろう」と早めに立ち直れる", f:"S", r:false},
+  {t:"ちょっとしたことでも、悪い方に考えて不安になりやすい", f:"S", r:true},
+  {t:"人前に立つと緊張して、実力を出しきれないことがある", f:"S", r:true},
+  {t:"言われた一言が気になって、後からずっと考え込んでしまう", f:"S", r:true},
+  {t:"気分の良し悪しが、自分でも分かるくらい変わりやすい", f:"S", r:true},
+];
+
+/* ===== 因子メタ情報 ===== */
+const FACTORS = {
+  O:{name:"開放性", sub:"好奇心・創造性 ↔ 堅実・現実志向"},
+  C:{name:"誠実性", sub:"計画性・責任感 ↔ 柔軟・即興型"},
+  E:{name:"外向性", sub:"社交的・行動的 ↔ 内向的・思慮深い"},
+  A:{name:"協調性", sub:"協力・共感 ↔ 主張・合理"},
+  S:{name:"情緒安定性", sub:"冷静・ストレス耐性 ↔ 慎重・繊細"},
+};
+
+/* ===== 総評用キーワード（因子 × 高/中/低） =====
+   strong=強みの一言 / caution=気をつけたい点の一言（midは空＝総括に出さない） */
+const KW = {
+  O:{high:{strong:"新しい発想と挑戦心",   caution:"一点への集中と地道な作業"},
+     mid: {strong:"柔軟さと現実感のバランス", caution:""},
+     low: {strong:"堅実さと安定感",       caution:"変化や新しいやり方への対応"}},
+  C:{high:{strong:"計画性と責任感",       caution:"完璧主義になりすぎないこと"},
+     mid: {strong:"メリハリのある進め方",   caution:""},
+     low: {strong:"臨機応変な対応力",     caution:"計画性と継続性"}},
+  E:{high:{strong:"行動力と社交性",       caution:"傾聴と一人での地道な作業"},
+     mid: {strong:"発信と傾聴のバランス",   caution:""},
+     low: {strong:"集中力と思慮深さ",     caution:"自己アピールや発信"}},
+  A:{high:{strong:"協調性と思いやり",     caution:"自己主張と断る力"},
+     mid: {strong:"協調と主張のバランス",   caution:""},
+     low: {strong:"率直さと合理的な判断",  caution:"周囲への配慮や譲歩"}},
+  S:{high:{strong:"冷静さとストレス耐性",  caution:"リスクや周囲の不安への感度"},
+     mid: {strong:"落ち着きと慎重さ",     caution:""},
+     low: {strong:"慎重さと危機管理",     caution:"プレッシャー下での安定"}},
+};
+
+/* ===== 結果テキスト（因子 × 高/中/低） ===== */
+const RESULTS = {
+  O:{
+    high:{g:"好奇心が強く、新しい発想や変化を前向きに受け入れられます。既存のやり方にとらわれず、改善案や新しい視点を出すのが得意です。",
+         b:"興味が広がりすぎて一つに集中しきれない、地道なルーティン作業を軽視しがち、という傾向が出やすいです。",
+         rp:"「飽きっぽい」→「常により良い方法を探し続ける／変化に強い」",
+         pr:"私の長所は新しいことへの探究心です。前例のない課題でも自分で調べ、より良いやり方を提案してきました。"},
+    mid:{g:"新しいものへの関心と、現実的な視点のバランスが取れています。状況に応じて柔軟にも堅実にも振る舞えます。",
+         b:"突出した独創性や「これがやりたい」という尖った志向は、やや見えにくい場合があります。",
+         rp:"「特徴が薄い」→「新旧どちらの視点も状況に応じて使い分けられる」",
+         pr:"新しい提案を取り入れつつ、現実的に実行できるかを冷静に見極めるバランス感覚が私の強みです。"},
+    low:{g:"現実的で堅実です。実証されたやり方を着実に守り、地に足のついた安定した判断ができます。",
+         b:"変化や新しいやり方への抵抗が強く、前例のない状況への対応や柔軟な発想が苦手なことがあります。",
+         rp:"「頭が固い」→「確実で堅実、安定感がある」",
+         pr:"決められた手順を確実に守り、安定した品質で業務を遂行することを得意としています。"},
+  },
+  C:{
+    high:{g:"計画的で責任感が強く、引き受けたことを最後までやり遂げます。約束や締め切りを守り、周囲から信頼されます。",
+         b:"完璧主義になりやすく融通が利かない、自分にも他人にも厳しくなりがち、という面が出ることがあります。",
+         rp:"「融通が利かない」→「責任感が強く、最後まで丁寧にやり遂げる」",
+         pr:"一度引き受けた仕事は、計画を立てて最後までやり遂げる責任感が私の長所です。"},
+    mid:{g:"必要な場面ではきちんと計画・実行でき、力を抜くところとのメリハリもあります。過度に張り詰めません。",
+         b:"場面によっては詰めの甘さや先延ばしが出ることがあり、常に高い自己管理が求められるとムラが出やすいです。",
+         rp:"「ムラがある」→「優先順位をつけてメリハリよく取り組める」",
+         pr:"重要な業務には計画的に取り組み、状況に応じて力の配分を調整できる点が私の強みです。"},
+    low:{g:"柔軟で臨機応変です。その場の状況に合わせて動け、堅苦しさがなく、即興的な対応が得意です。",
+         b:"計画性や継続性に欠け、先延ばしや詰めの甘さが出やすいです。締め切り管理や細部の詰めが課題になりがちです。",
+         rp:"「計画性がない」→「臨機応変で柔軟に動ける」（短所として認め『手帳で管理する等で対策中』と添えると好印象）",
+         pr:"予定外の事態にも臨機応変に対応し、その場で最善の動きを選べる柔軟さが私の強みです。"},
+  },
+  E:{
+    high:{g:"社交的で行動力があり、人を巻き込んでチームを活性化できます。初対面でも臆さず関係を築けます。",
+         b:"思いつきで動きすぎる、一人での地道な作業や人の話の傾聴がおろそかになりがち、という面が出ることがあります。",
+         rp:"「落ち着きがない」→「行動力があり、自分から動ける」",
+         pr:"私の長所は行動力です。考えるだけでなくまず動き、周囲を巻き込んで物事を前に進めてきました。"},
+    mid:{g:"社交性と落ち着きのバランスが良く、場に応じて前に出ることも、聞き役に回ることもできます。",
+         b:"強烈なリーダーシップや圧倒的な発信力は前面に出にくく、印象が控えめに見えることがあります。",
+         rp:"「目立たない」→「場面に応じて発信と傾聴を使い分けられる」",
+         pr:"自分から動く積極性と、相手の話を聞く落ち着きの両方を、場面に応じて発揮できる点が強みです。"},
+    low:{g:"落ち着いていて思慮深く、一人で集中して取り組む作業に強いです。軽率に動かず、聞き役として信頼されます。",
+         b:"自己アピールや人前での発言が苦手で、新しい環境での関係構築に時間がかかり、受け身に見られやすいです。",
+         rp:"「消極的・暗い」→「思慮深く、落ち着いて物事に取り組める」",
+         pr:"一つの物事にじっくり集中し、確実に仕上げることを得意としています。聞き役として信頼されることも多いです。"},
+  },
+  A:{
+    high:{g:"思いやりがあり協力的です。チームの調和を保ち、相手の立場で考えられ、信頼関係を築くのが上手です。",
+         b:"人に合わせすぎて自分の意見を抑えがち、頼まれると断れない、対立を避けて問題を先送りしがち、という面が出ます。",
+         rp:"「自己主張が弱い」→「相手の立場に立って協力できる／調整役になれる」",
+         pr:"相手の気持ちを汲み取り、チーム全体が動きやすいように調整することが私の長所です。"},
+    mid:{g:"協調性と自分の軸のバランスが取れています。合わせるべき時は合わせ、主張すべき時は主張できます。",
+         b:"状況次第で態度が読みにくく見えることがあり、強い共感力・強い主張のどちらも突出はしにくいです。",
+         rp:"「どっちつかず」→「協調と主張のバランスを取れる」",
+         pr:"周囲と協力しつつ、必要な場面では自分の意見もきちんと伝えられるバランス感覚が私の強みです。"},
+    low:{g:"自分の意見をはっきり持ち、率直に主張できます。情に流されず合理的に判断し、必要な対立も恐れません。",
+         b:"主張が強く、協調性や配慮に欠けて見えることがあります。人の気持ちへの配慮や譲歩が課題になりがちです。",
+         rp:"「協調性がない・きつい」→「自分の意見をはっきり持ち、率直に伝えられる」",
+         pr:"物事を客観的に判断し、必要な意見は率直に伝えられます。なれ合いに流されず、成果を優先します。"},
+  },
+  S:{
+    high:{g:"精神的に安定し、プレッシャーやトラブルにも動じません。気持ちの切り替えが早く、安定して力を発揮できます。",
+         b:"楽観的すぎてリスクや他人の不安に鈍感なことがあり、危機感が周囲に伝わりにくい場合があります。",
+         rp:"「緊張感がない」→「プレッシャーに強く、冷静でいられる」",
+         pr:"私の長所はプレッシャーへの強さです。トラブル時も慌てず、やるべきことを冷静に進められます。"},
+    mid:{g:"適度な緊張感と冷静さを併せ持ち、慎重さと安定感のバランスが取れています。",
+         b:"状況によっては不安や緊張が出ることがあり、大きなプレッシャー下での安定度にはやや波があります。",
+         rp:"「波がある」→「慎重さと冷静さをバランスよく持つ」",
+         pr:"適度な緊張感を持ちつつ、重要な場面では落ち着いて対応できる点が私の強みです。"},
+    low:{g:"感受性が豊かで、リスクや細部に敏感です。慎重で最悪の事態に備える危機管理ができ、共感力も高いです。",
+         b:"不安や緊張を感じやすく、プレッシャーで力を出しにくいことがあります。落ち込みを引きずりやすい面があります。",
+         rp:"「打たれ弱い・心配性」→「慎重で、リスクに気づき先に備えられる」",
+         pr:"物事を慎重に捉え、起こりうるリスクに事前に備えられます。心配性な面は、準備を徹底することでカバーしています。"},
+  },
+};
+
+/* ===== 状態 ===== */
+let current = 0;
+let deck = QUESTIONS.slice();           // 実際に出題する並び（開始時にシャッフル）
+const answers = new Array(QUESTIONS.length).fill(null);
+
+const $ = id => document.getElementById(id);
+
+// Fisher-Yatesでシャッフル（表示順をランダム化。集計は各設問のf/rを使うので順不同でOK）
+function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz(){
+  deck = shuffle(QUESTIONS.slice());
+  answers.fill(null);
+  current = 0;
+  $("start").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("qTotal").textContent = deck.length;
+  render();
+  window.scrollTo(0,0);
+}
+
+function render(){
+  const q = deck[current];
+  $("qText").textContent = q.t;
+  $("qNum").textContent = current + 1;
+  const pct = Math.round((current) / QUESTIONS.length * 100);
+  $("qPct").textContent = pct;
+  $("barFill").style.width = pct + "%";
+  $("backBtn").style.visibility = current === 0 ? "hidden" : "visible";
+}
+
+function answer(val){
+  answers[current] = val;
+  if(current < deck.length - 1){
+    current++;
+    render();
+  } else {
+    showResult();
+  }
+}
+
+function goBack(){
+  if(current > 0){ current--; render(); }
+}
+
+function showResult(){
+  // スコア集計（0〜8）
+  const scores = {O:0,C:0,E:0,A:0,S:0};
+  deck.forEach((q,i)=>{
+    const a = answers[i];
+    const traitPresent = q.r ? (a === false) : (a === true);
+    if(traitPresent) scores[q.f]++;
+  });
+
+  const levelKey = s => s >= 6 ? "high" : (s >= 3 ? "mid" : "low");
+  const levelLabel = {high:"高い", mid:"中くらい", low:"低め"};
+  const levelClass = {high:"lvl-high", mid:"lvl-mid", low:"lvl-low"};
+
+  // 最も際立つ特性（中央=4から最も離れた因子）
+  let topF = "O", topDist = -1;
+  Object.keys(scores).forEach(f=>{
+    const d = Math.abs(scores[f] - 4);
+    if(d > topDist){ topDist = d; topF = f; }
+  });
+  const topLvl = levelKey(scores[topF]);
+
+  // サマリー
+  $("summaryBox").innerHTML =
+    '<span class="badge2">あなたの最も際立つ特性</span>' +
+    '<h2>' + FACTORS[topF].name + 'が' + levelLabel[topLvl] + 'タイプ</h2>' +
+    '<p>' + RESULTS[topF][topLvl].g + '</p>';
+
+  // 各因子カード
+  let html = "";
+  ["O","C","E","A","S"].forEach(f=>{
+    const s = scores[f];
+    const lk = levelKey(s);
+    const r = RESULTS[f][lk];
+    html +=
+      '<div class="factor">' +
+        '<div class="factor-head">' +
+          '<div class="name">' + FACTORS[f].name + '<small>' + FACTORS[f].sub + '</small></div>' +
+          '<div class="meter"><span style="width:' + (s/8*100) + '%"></span></div>' +
+          '<span class="level-pill ' + levelClass[lk] + '">' + levelLabel[lk] + '（' + s + '/8）</span>' +
+        '</div>' +
+        '<div class="factor-body">' +
+          '<div class="block"><span class="lbl lbl-good">長所</span><p>' + r.g + '</p></div>' +
+          '<div class="block"><span class="lbl lbl-bad">短所</span><p>' + r.b + '</p></div>' +
+          '<div class="block"><span class="lbl lbl-tip">面接でのヒント</span>' +
+            '<p>言い換え例：' + r.rp + '</p>' +
+            '<div class="pr"><b>自己PR例文：</b>「' + r.pr + '」</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  });
+  $("factorList").innerHTML = html;
+
+  /* ===== 総評（5因子を統合） ===== */
+  // 際立つ順（中央4から離れている順）に並べ、高/低の因子を「際立つ特性」とする
+  const order = ["O","C","E","A","S"].sort((a,b)=>Math.abs(scores[b]-4)-Math.abs(scores[a]-4));
+  const distinctive = order.filter(f => levelKey(scores[f]) !== "mid");
+
+  // 人物像の一文
+  let typeLine, charLine;
+  if(distinctive.length === 0){
+    typeLine = "バランス型タイプ";
+    charLine = "特定の方向に大きく偏らず、全体としてバランスの取れたタイプです。極端さがないぶん、さまざまな環境や相手に適応しやすいのが持ち味です。一方で「自分はこういう人間だ」という軸は印象に残りにくいため、面接では具体的なエピソードで肉づけして語ると効果的です。";
+  } else {
+    const tops = distinctive.slice(0,3).map(f => KW[f][levelKey(scores[f])].strong);
+    typeLine = (FACTORS[distinctive[0]].name) + "が際立つタイプ";
+    charLine = "あなたは" + tops.join("、") + "を持ち味とするタイプです。回答全体から、これらがあなたらしさの軸として浮かび上がっています。";
+  }
+
+  // 強み総括
+  const strongSrc = (distinctive.length ? distinctive : order.slice(0,2)).slice(0,3);
+  const strongPhrases = strongSrc.map(f => KW[f][levelKey(scores[f])].strong);
+  const strongText = "特に <b>" + strongPhrases.join("</b>、<b>") + "</b> が強みです。これらは具体的な経験談とセットで語ると、面接官に伝わりやすくなります。";
+
+  // 気をつけたい点 総括
+  const cautionPhrases = order.map(f => KW[f][levelKey(scores[f])].caution).filter(Boolean);
+  const cautionText = cautionPhrases.length
+    ? "一方で、<b>" + cautionPhrases.slice(0,3).join("</b>、<b>") + "</b> には意識して向き合うと、より信頼される印象になります。短所として正直に認めたうえで「どう対策しているか」を添えるのがコツです。"
+    : "目立った弱点は表れていません。そのぶん、強みを裏づける具体的な経験を準備しておくと説得力が増します。";
+
+  // 面接アドバイス（長所・短所の具体回答）
+  const longF  = distinctive[0] || order[0];
+  let shortF   = distinctive.find(f => f !== longF) || order.find(f => f !== longF) || longF;
+  const longR  = RESULTS[longF][levelKey(scores[longF])];
+  const shortR = RESULTS[shortF][levelKey(scores[shortF])];
+
+  $("overallBox").innerHTML =
+    '<div class="overall">' +
+      '<h3>総評</h3>' +
+      '<p class="ov-type">あなたは「' + typeLine + '」</p>' +
+      '<p>' + charLine + '</p>' +
+      '<div class="ov-sec ov-strong"><span class="ov-lbl">総合的な強み</span><p>' + strongText + '</p></div>' +
+      '<div class="ov-sec ov-caution"><span class="ov-lbl">気をつけたい点</span><p>' + cautionText + '</p></div>' +
+      '<div class="ov-advice">' +
+        '<span class="ov-lbl">面接でこう答えよう</span>' +
+        '<p class="qa"><span class="q">Q. あなたの長所は？</span><br>' +
+          '「' + longR.pr + '」<br><span style="color:var(--sub);font-size:.86rem;">（' + FACTORS[longF].name + 'の高さを活かした回答です）</span></p>' +
+        '<p class="qa"><span class="q">Q. あなたの短所は？</span><br>' +
+          shortR.b + '<br>面接では <b>' + shortR.rp + '</b> のように言い換え、向き合っている姿勢とセットで伝えましょう。</p>' +
+      '</div>' +
+    '</div>';
+
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
